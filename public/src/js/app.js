@@ -1,4 +1,7 @@
 var deferredPrompt;
+if(!window.Promise){
+    window.Promise = Promise;
+}
 // if statement is used to check if the browser supports using service worker 
 if ('serviceWorker' in navigator){
     // this will tell the browser that the sw.js fike should be treated in a
@@ -9,7 +12,7 @@ if ('serviceWorker' in navigator){
     // the callback function passed to then() will be executed once the registration is done
     .then(function() {
         console.log('service worker registered');
-    });
+    }).catch(err => console.log(err));
 
 }
 /* to prevent the browser from showing the install app banner automatically*/
@@ -18,4 +21,4 @@ window.addEventListener('beforeinstallprompt',function(event){
     event.preventDefault();
     deferredPrompt = event ; 
     return false;
-})
+});
