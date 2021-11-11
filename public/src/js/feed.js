@@ -29,6 +29,19 @@ function closeCreatePostModal() {
 shareImageButton.addEventListener('click', openCreatePostModal);
 
 closeCreatePostModalButton.addEventListener('click', closeCreatePostModal);
+/* we can access the cache from front too but we ned to use another name of cache to make the On Demand caching */
+// var onSaveButtonClicked = (event)=>{
+//   console.log('clicked');
+//   if('caches' in window){
+//     caches.open('user-requested').then(cache =>{
+//       cache.addAll([
+//         'https://httpbin.org/get',
+//         '/src/images/sf-boat.jpg'
+//       ]);
+//     })
+//   }
+  
+// }
 
 function createCard() {
   var cardWrapper = document.createElement('div');
@@ -40,6 +53,7 @@ function createCard() {
   cardTitle.style.height = '180px';
   cardWrapper.appendChild(cardTitle);
   var cardTitleTextElement = document.createElement('h2');
+  cardTitleTextElement.style.color = "white";
   cardTitleTextElement.className = 'mdl-card__title-text';
   cardTitleTextElement.textContent = 'San Francisco Trip';
   cardTitle.appendChild(cardTitleTextElement);
@@ -47,6 +61,10 @@ function createCard() {
   cardSupportingText.className = 'mdl-card__supporting-text';
   cardSupportingText.textContent = 'In San Francisco';
   cardSupportingText.style.textAlign = 'center';
+  // var cardSaveButton = document.createElement('button');
+  // cardSaveButton.textContent = 'save'
+  // cardSaveButton.addEventListener('click',onSaveButtonClicked)
+  // cardSupportingText.appendChild(cardSaveButton);
   cardWrapper.appendChild(cardSupportingText);
   componentHandler.upgradeElement(cardWrapper);
   sharedMomentsArea.appendChild(cardWrapper);
