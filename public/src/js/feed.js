@@ -29,7 +29,7 @@ function closeCreatePostModal() {
 shareImageButton.addEventListener('click', openCreatePostModal);
 
 closeCreatePostModalButton.addEventListener('click', closeCreatePostModal);
-/* we can access the cache from front too but we ned to use another name of cache to make the On Demand caching */
+/* we can access the cache from front JS too but we need to use another name of cache to make the On Demand caching */
 // var onSaveButtonClicked = (event)=>{
 //   console.log('clicked');
 //   if('caches' in window){

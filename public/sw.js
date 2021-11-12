@@ -4,7 +4,7 @@ self.addEventListener('install',function(event){
     console.log('[Service Worker]installing service worker ...',event);
     event.waitUntil( /* we added waitUntil() because SW works with async
      code because it runs in the bg and it's event driven */
-        caches.open(STATIC_KEY) //caches.open() tries to open the chache, if it doesn't exist, it will create it
+        caches.open(STATIC_KEY) //caches.open() tries to open the cache, if it doesn't exist, it will create it
             .then( function(cache) { 
                 // Remember: just slash is a different request(URL) we need to cache it too
               return  cache.addAll([
@@ -31,7 +31,7 @@ self.addEventListener('activate',function(event){
     console.log('[Service Worker]activating service worker ...',event);
     event.waitUntil(
         caches.keys().then(keyList => {
-            // Promise.all() transforms the strings arrayto promises array
+            // Promise.all() transforms the strings array to promises array
             return Promise.all(keyList.map(key =>
                 {  
                 if(key !== STATIC_KEY  && key !== DYNAMIC_KEY){
@@ -46,23 +46,9 @@ self.addEventListener('activate',function(event){
 });
  /* there is cache and caches, caches refers to the overall cache storage,
          it allows us to open sub-cache and also call the match() methode*/
-          // the key of cache is resuest, never a string
+          // the key of cache is request, never a string
           // we intercept the request and see if it's available in cache, if not the response will be null
-self.addEventListener('activate', function(event) {
-  console.log('[Service Worker] Activating Service Worker ....', event);
-  event.waitUntil(
-    caches.keys()
-      .then(function(keyList) {
-        return Promise.all(keyList.map(function(key) {
-          if (key !== STATIC_KEY && key !== DYNAMIC_KEY) {
-            console.log('[Service Worker] Removing old cache.', key);
-            return caches.delete(key);
-          }
-        }));
-      })
-  );
-  return self.clients.claim();
-});
+
   
   self.addEventListener('fetch', function(event) {
     event.respondWith(
@@ -82,7 +68,7 @@ self.addEventListener('activate', function(event) {
               .catch(function(err) {
                 return caches.open(STATIC_KEY)
                   .then(function(cache) {
-                    return cache.match('/offline.html'); //in case we didn't cache assets yes 
+                    return cache.match('/offline.html'); //in case we didn't cache assets yes we need a fallback page.
                   });
               });
           }
@@ -90,6 +76,6 @@ self.addEventListener('activate', function(event) {
     );
   });
 //if the request doesn't exist we return the request fetch
-/* res (response in general) is consumed once then it will be empty that's why we use res.clone(), it stores a clone of res in cache  */
+/* res (response in general) is consumed once, then it will be empty, that's why we use res.clone(), it stores a clone of res in cache  */
 /* if we didn't return both returns we gonna make the request, intercept it,store cache but never give the response back to the HTML file
  it would succeed next time we try because then it'would be in cache but directly loading it from the network would never work*/
