@@ -20,6 +20,15 @@ function openCreatePostModal() {
 
     deferredPrompt = null;
   }
+  //getting rid service worker
+//   if ('serviceWorker' in navigator) {
+//     navigator.serviceWorker.getRegistrations().then(function(registrations) {
+//     for(let registration of registrations) {
+//             registration.unregister()
+//     }}).catch(function(err) {
+//         console.log('Service Worker registration failed: ', err);
+//     });
+// }
 }
 
 function closeCreatePostModal() {
@@ -40,8 +49,14 @@ closeCreatePostModalButton.addEventListener('click', closeCreatePostModal);
 //       ]);
 //     })
 //   }
-  
 // }
+//the code above is used in on demande caching
+
+const clearCards = ()=>{
+  while(sharedMomentsArea.hasChildNodes()){
+    sharedMomentsArea.removeChild(sharedMomentsArea.lastChild)
+  }
+}
 
 function createCard() {
   var cardWrapper = document.createElement('div');
@@ -65,15 +80,43 @@ function createCard() {
   // cardSaveButton.textContent = 'save'
   // cardSaveButton.addEventListener('click',onSaveButtonClicked)
   // cardSupportingText.appendChild(cardSaveButton);
+  //the code above is used in the on demande cache section
   cardWrapper.appendChild(cardSupportingText);
   componentHandler.upgradeElement(cardWrapper);
   sharedMomentsArea.appendChild(cardWrapper);
 }
+var url = 'https://httpbin.org/get';
+var networkDataReceived = false;
 
-fetch('https://httpbin.org/get')
+fetch(url)
   .then(function(res) {
+    networkDataReceived = true;
     return res.json();
   })
   .then(function(data) {
+    console.log('Data from web',data);
+    clearCards();
     createCard();
   });
+
+  if('caches' in window){
+    caches.open('user-requested').then(cache => {
+        caches.match(url)
+        .then(response => {
+          if(response){
+            return response.json();
+          }
+        })
+        .then( data => {
+          console.log('Data from cache',data);
+          if(!networkDataReceived){
+            clearCards();
+             createCard();
+          }
+         
+        })
+    })
+  }
+
+
+  // JSON data should't be stored in cache
