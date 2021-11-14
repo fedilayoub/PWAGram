@@ -1,4 +1,4 @@
-const STATIC_CACHE = 'static-v4';
+const STATIC_CACHE = 'static-v5';
 const DYNAMIC_CACHE = 'dynamic-v2';
 const STATIC_ASSETS = [
   '/', 
@@ -101,7 +101,7 @@ self.addEventListener('activate',function(event){
     return array.indexOf(cachePath) > -1;
   }
   self.addEventListener('fetch', function(event) {
-    let url = 'https://httpbin.org/get';
+    let url = 'https://pwagram-85170-default-rtdb.firebaseio.com/posts';
     //cache then network
     if(event.request.url.indexOf(url) > -1){ 
       event.respondWith(

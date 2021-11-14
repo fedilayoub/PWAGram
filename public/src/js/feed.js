@@ -58,19 +58,19 @@ const clearCards = ()=>{
   }
 }
 
-function createCard() {
+function createCard(post) {
   var cardWrapper = document.createElement('div');
   cardWrapper.className = 'shared-moment-card mdl-card mdl-shadow--2dp';
   var cardTitle = document.createElement('div');
   cardTitle.className = 'mdl-card__title';
-  cardTitle.style.backgroundImage = 'url("/src/images/sf-boat.jpg")';
+  cardTitle.style.backgroundImage = 'url(' + post.image + ')';
   cardTitle.style.backgroundSize = 'cover';
   cardTitle.style.height = '180px';
   cardWrapper.appendChild(cardTitle);
   var cardTitleTextElement = document.createElement('h2');
   cardTitleTextElement.style.color = "white";
   cardTitleTextElement.className = 'mdl-card__title-text';
-  cardTitleTextElement.textContent = 'San Francisco Trip';
+  cardTitleTextElement.textContent = post.title;
   cardTitle.appendChild(cardTitleTextElement);
   var cardSupportingText = document.createElement('div');
   cardSupportingText.className = 'mdl-card__supporting-text';
@@ -85,8 +85,26 @@ function createCard() {
   componentHandler.upgradeElement(cardWrapper);
   sharedMomentsArea.appendChild(cardWrapper);
 }
-var url = 'https://httpbin.org/get';
+
+const updateUI = (posts)=>{
+  clearCards();
+  for(let post of posts){
+    createCard(post);
+  }
+}
+var url = 'https://pwagram-85170-default-rtdb.firebaseio.com/posts.json';
 var networkDataReceived = false;
+
+// fetch(url,{
+//   method: 'POST',
+//   headers: {
+//     'Content-type': 'application/json',
+//     'Accept': 'application/json'
+//   },
+//   body: JSON.stringify({
+//     message: 'Some message'
+//   })
+// })
 
 fetch(url)
   .then(function(res) {
@@ -95,8 +113,11 @@ fetch(url)
   })
   .then(function(data) {
     console.log('Data from web',data);
-    clearCards();
-    createCard();
+    let dataArray = [];
+    for (let key in data){
+      dataArray.push(data[key]);
+    }
+    updateUI(dataArray);
   });
 
   if('caches' in window){
@@ -110,8 +131,11 @@ fetch(url)
         .then( data => {
           console.log('Data from cache',data);
           if(!networkDataReceived){
-            clearCards();
-             createCard();
+            let dataArray = [];
+            for (let key in data){
+              dataArray.push(data[key]);
+            }
+             updateUI(dataArray);
           }
          
         })
