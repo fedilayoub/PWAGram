@@ -1,4 +1,9 @@
-const STATIC_CACHE = 'static-v5';
+// importing idb package
+importScripts('/src/js/idb.js');
+importScripts('/src/js/utility.js');
+
+
+const STATIC_CACHE = 'static-v4';
 const DYNAMIC_CACHE = 'dynamic-v2';
 const STATIC_ASSETS = [
   '/', 
@@ -6,6 +11,7 @@ const STATIC_ASSETS = [
   '/offline.html',
   '/src/js/app.js',
   '/src/js/feed.js',
+  '/src/js/idb.js',
   '/src/js/promise.js',
   '/src/js/fetch.js',
   '/src/js/material.min.js',
@@ -16,6 +22,7 @@ const STATIC_ASSETS = [
   'https://fonts.googleapis.com/icon?family=Material+Icons',
   'https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css'
   ];
+
 // this function allows deleting assets in dynamic cache and keep it strict to certain length
   // const trimCache = (cacheName,maxItems) =>{
   //   caches.open(cacheName)
@@ -100,22 +107,28 @@ self.addEventListener('activate',function(event){
     }
     return array.indexOf(cachePath) > -1;
   }
+
+
   self.addEventListener('fetch', function(event) {
     let url = 'https://pwagram-85170-default-rtdb.firebaseio.com/posts';
     //cache then network
     if(event.request.url.indexOf(url) > -1){ 
       event.respondWith(
-      caches.open(DYNAMIC_CACHE)
-      .then(cache =>{
-        return fetch(event.request)
+            fetch(event.request)
         .then(res => {
-          // trimCache(DYNAMIC_CACHE,3)
-          cache.put(event.request.url,res.clone());
+          let clonedRes = res.clone();
+          clearAllData('posts')
+          .then(()=>{
+           return  clonedRes.json();
+         
+          }) .then(data=>{
+            for (let key in data){
+             writeData('posts',data[key])
+            }
+          })
           return res;
         })
-      })
-    
-    );
+      )
   } else if (isInArray(event.request.url, STATIC_ASSETS) ){
     //cache only
     event.respondWith(
