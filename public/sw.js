@@ -3,7 +3,7 @@ importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
 
-const STATIC_CACHE = 'static-v4';
+const STATIC_CACHE = 'static-v5';
 const DYNAMIC_CACHE = 'dynamic-v2';
 const STATIC_ASSETS = [
   '/', 
@@ -125,7 +125,7 @@ self.addEventListener('activate',function(event){
             for (let key in data){
              writeData('posts',data[key])
             }
-          })
+          });
           return res;
         })
       )

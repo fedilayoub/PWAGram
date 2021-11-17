@@ -5,9 +5,11 @@ var sharedMomentsArea = document.querySelector('#shared-moments');
 
 function openCreatePostModal() {
   createPostArea.style.display = 'block';
+  // setTimeout(()=>{
+    createPostArea.style.transform = 'translateY(0)';
+  // },1)
   if (deferredPrompt) {
     deferredPrompt.prompt();
-
     deferredPrompt.userChoice.then(function(choiceResult) {
       console.log(choiceResult.outcome);
 
@@ -17,7 +19,6 @@ function openCreatePostModal() {
         console.log('User added to home screen');
       }
     });
-
     deferredPrompt = null;
   }
   //getting rid service worker
@@ -32,7 +33,8 @@ function openCreatePostModal() {
 }
 
 function closeCreatePostModal() {
-  createPostArea.style.display = 'none';
+  createPostArea.style.transform = 'translateY(100vh)';
+  // createPostArea.style.display = 'none';
 }
 
 shareImageButton.addEventListener('click', openCreatePostModal);
@@ -65,7 +67,6 @@ function createCard(post) {
   cardTitle.className = 'mdl-card__title';
   cardTitle.style.backgroundImage = 'url(' + post.image + ')';
   cardTitle.style.backgroundSize = 'cover';
-  cardTitle.style.height = '180px';
   cardWrapper.appendChild(cardTitle);
   var cardTitleTextElement = document.createElement('h2');
   cardTitleTextElement.style.color = "white";

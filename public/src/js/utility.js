@@ -32,3 +32,16 @@ const clearAllData = (st)=>{
        return tx.complete ; 
    })
 }
+
+const deleteItemFromBb = (st,id)=>{
+  return dbPromise
+  .then(db =>{
+    let tx = db.transaction(st,'readwrite');
+    let store = tx.objectStore(st);
+    store.delete(id);
+    return tx.complete;
+  }).then(()=>{
+    console.log('item deleted')
+  })
+
+}
